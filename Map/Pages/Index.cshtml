@@ -1,0 +1,34 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            var cameraLatLng = @Html.Raw(Json.Serialize(Model.ViewLatLng));
+
+            var map = L.map('map').setView([cameraLatLng.latitude, cameraLatLng.longitude], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            var edgeCities = @Html.Raw(Json.Serialize(Model.EdgeCentroids));
+
+            edgeCities.forEach(element => {
+                console.log(element);
+                L.marker([element.dD_N, element.dD_E], { title: element.name }).addTo(map).bindPopup(element.name).openPopup();;
+            });
+        });
+    </script>    
+}
+
+
+
+<div class="text-center">
+    <h1 class="display-4">Edge Cities of Latvia</h1>
+    <div style="height: 500px;" id="map"></div>
+</div>
